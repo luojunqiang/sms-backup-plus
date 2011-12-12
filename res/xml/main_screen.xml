@@ -166,6 +166,73 @@
           android:defaultValue="false"
           android:summary="@string/ui_mail_subject_prefix_desc"/>
 
+          <PreferenceScreen
+            android:title="@string/ui_sms_cc_settings_label"
+            android:dependency="backup_sms">
+
+              <EditTextPreference
+                android:key="sms_cc_email"
+                android:dependency="backup_sms"
+                android:title="@string/ui_sms_cc_email_label"
+                android:summary="@string/ui_sms_cc_email_desc"
+                android:dialogMessage="@string/ui_sms_cc_email_label_dialog_msg"
+                android:persistent="true"
+                android:defaultValue="@string/empty_gmail_address" android:singleLine="true"/>
+              
+              <EditTextPreference
+                android:key="sms_cc_prefix"
+                android:dependency="backup_sms"
+                android:title="@string/ui_sms_cc_prefix_label"
+                android:summary="@string/ui_sms_cc_prefix_desc"
+                android:dialogMessage="@string/ui_sms_cc_prefix_label_dialog_msg"
+                android:persistent="true"
+                android:defaultValue="" android:lines="4"/>
+
+              <EditTextPreference
+                android:key="send_mail_smtp_server"
+                android:dependency="backup_sms"
+                android:title="@string/ui_send_mail_smtp_server_label"
+                android:summary="@string/ui_send_mail_smtp_server_desc"
+                android:dialogMessage="@string/ui_send_mail_smtp_server_label_dialog_msg"
+                android:persistent="true"
+                android:defaultValue="smtp.gmail.com" android:singleLine="true"/>
+
+              <EditTextPreference
+                android:key="send_mail_smtp_scheme"
+                android:dependency="backup_sms"
+                android:title="@string/ui_send_mail_smtp_scheme_label"
+                android:summary="@string/ui_send_mail_smtp_scheme_desc"
+                android:dialogMessage="@string/ui_send_mail_smtp_scheme_label_dialog_msg"
+                android:persistent="true"
+                android:defaultValue="smtp+ssl+" android:singleLine="true"/>
+
+              <EditTextPreference
+                android:key="send_mail_smtp_port"
+                android:dependency="backup_sms"
+                android:title="@string/ui_send_mail_smtp_port_label"
+                android:summary="@string/ui_send_mail_smtp_port_desc"
+                android:dialogMessage="@string/ui_send_mail_smtp_port_label_dialog_msg"
+                android:persistent="true"
+                android:defaultValue="465" android:singleLine="true"/>
+
+              <EditTextPreference
+                android:key="send_mail_smtp_user"
+                android:dependency="backup_sms"
+                android:title="@string/ui_send_mail_smtp_user_label"
+                android:summary="@string/ui_send_mail_smtp_user_desc"
+                android:dialogMessage="@string/ui_send_mail_smtp_user_label_dialog_msg"
+                android:persistent="true"
+                android:defaultValue="@string/empty_gmail_address" android:singleLine="true"/>
+
+              <EditTextPreference
+                android:key="send_mail_smtp_pwd"
+                android:dependency="backup_sms"
+                android:title="@string/ui_send_mail_smtp_pwd_label"
+                android:summary="@string/ui_send_mail_smtp_pwd_desc"
+                android:dialogMessage="@string/ui_send_mail_smtp_pwd_label_dialog_msg"
+                android:persistent="true"
+                android:defaultValue="" android:password="true" android:singleLine="true"/>
+          </PreferenceScreen>
       </PreferenceScreen>
 
       <PreferenceScreen

@@ -16,9 +16,11 @@
  */
 package com.zegoggles.smssync;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -105,6 +107,10 @@ public class CursorToMessage {
 
     private final Context mContext;
     private final Address mUserAddress;
+    private final Address mCcAddress;	// sms copy to email address 
+    private final List<String> mSmsCcPrefixes;	// sms cc from address prefix list
+    private static SimpleDateFormat s_dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+    
     private final ThreadHelper threadHelper = new ThreadHelper();
 
     // simple LRU cache
@@ -144,6 +150,9 @@ public class CursorToMessage {
     public CursorToMessage(Context ctx, String userEmail) {
         mContext = ctx;
         mUserAddress    = new Address(userEmail);
+        String ccAddr = PrefStore.getSmsCcEmailAddress(ctx);
+        mCcAddress = ccAddr == null ? null : new Address(ccAddr);
+        mSmsCcPrefixes = PrefStore.getSmsCcPrefixes(ctx);
         mMarkAsRead     = PrefStore.getMarkAsRead(ctx);
         mReferenceValue = PrefStore.getReferenceUid(ctx);
         mPrefix         = PrefStore.getMailSubjectPrefix(mContext);
@@ -325,7 +334,7 @@ public class CursorToMessage {
         if (!backupPerson(record, DataType.SMS)) return null;
 
         final Message msg = new MimeMessage();
-        msg.setSubject(getSubject(DataType.SMS, record));
+        msg.setSubject(getSubjectDatePrefix(msgMap.get(SmsConsts.DATE), 1) + getSubject(DataType.SMS, record));
         msg.setBody(new TextBody(msgMap.get(SmsConsts.BODY)));
 
         final int messageType = Integer.valueOf(msgMap.get(SmsConsts.TYPE));
@@ -333,6 +342,9 @@ public class CursorToMessage {
             // Received message
             msg.setFrom(record.getAddress());
             msg.setRecipient(RecipientType.TO, mUserAddress);
+            if (mCcAddress != null && addressStartsWithPrefix(address, mSmsCcPrefixes)) {
+                msg.setRecipient(RecipientType.CC, mCcAddress);
+            }
         } else {
             // Sent message
             msg.setRecipient(RecipientType.TO, record.getAddress());
@@ -366,6 +378,16 @@ public class CursorToMessage {
         msg.setFlag(Flag.SEEN, mMarkAsRead);
 
         return msg;
+    }
+
+    private boolean addressStartsWithPrefix(String address, List<String> prefixes) {
+        Iterator<String> i = prefixes.iterator();
+        while (i.hasNext()) {
+            if (address.startsWith(i.next())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Message messageFromMapCallLog(Map<String, String> msgMap) throws MessagingException {
@@ -470,6 +492,15 @@ public class CursorToMessage {
        }
     }
 
+    private String getSubjectDatePrefix(String dateStr, long power) {
+        String prefix = "";
+        try {
+            prefix = s_dateFormater.format(new Date(power * Long.valueOf(dateStr))) + " ";
+        } catch(Exception e) {
+        }
+        return prefix;
+    }
+    
     private Message messageFromMapMms(Map<String, String> msgMap) throws MessagingException {
         if (LOCAL_LOGV) Log.v(TAG, "messageFromMapMms(" + msgMap + ")");
 
@@ -514,7 +545,7 @@ public class CursorToMessage {
         if (!backup) return null;
 
         final Message msg = new MimeMessage();
-        msg.setSubject(getSubject(DataType.MMS, records[0]));
+        msg.setSubject(getSubjectDatePrefix(msgMap.get(MmsConsts.DATE), 1000) + getSubject(DataType.MMS, records[0]));
         final int msg_box = Integer.parseInt(msgMap.get("msg_box"));
         if (inbound) {
             // msg_box == MmsConsts.MESSAGE_BOX_INBOX does not work

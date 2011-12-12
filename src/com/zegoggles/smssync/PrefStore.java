@@ -16,7 +16,14 @@
 
 package com.zegoggles.smssync;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fsck.k9.mail.Message;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -481,6 +488,67 @@ public class PrefStore {
 
     static String getServerProtocol(Context ctx) {
         return getPrefs(ctx).getString(PREF_SERVER_PROTOCOL, DEFAULT_SERVER_PROTOCOL);
+    }
+
+    static String getSmtpUrlString(Context ctx) {
+        String host = getPrefs(ctx).getString("send_mail_smtp_server", "smtp.gmail.com").trim();
+        if (host == null || host.length() == 0) {
+            return null;
+        }
+        String port = getPrefs(ctx).getString("send_mail_smtp_port", "465").trim();
+        int portNum = -1;
+        if (port != null && port.length() > 0) {
+            portNum = Integer.parseInt(port);
+        }
+        
+        String username = getPrefs(ctx).getString("send_mail_smtp_user", "").trim();
+        String password = getPrefs(ctx).getString("send_mail_smtp_pwd", "").trim();
+        String userEnc;
+        String passwordEnc;
+        
+        try {
+            userEnc = (username != null) ? URLEncoder.encode(username, "UTF-8") : "";
+            passwordEnc = (password != null) ? URLEncoder.encode(password, "UTF-8") : "";
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("Could not encode username or password", e);
+        }
+
+        String scheme = getPrefs(ctx).getString("send_mail_smtp_scheme", "smtp+ssl+").trim();
+
+        //String authType = "AUTOMATIC";
+        //String userInfo = userEnc + ":" + passwordEnc + ":" + authType;
+        String userInfo = userEnc + ":" + passwordEnc;
+        try {
+            return new URI(scheme, userInfo, host, portNum, null, null, null).toString();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Can't create SmtpTransport URI", e);
+        }
+    }
+    
+    static String getSmsCcEmailAddress(Context ctx) {
+        String s = getPrefs(ctx).getString("sms_cc_email", "").trim();
+        if (s.length() == 0) {
+            return null;
+        } else {
+            return s;
+        }
+    }
+
+    protected static void fillStringList(List<String> list, String str) {
+        if (str == null || str.trim().length() == 0) {
+            return;
+        }
+        String[] l = str.split("\n");
+        for (int i = 0; i < l.length; ++i) {
+            list.add(l[i].trim());
+        }
+    }
+
+    static List<String> getSmsCcPrefixes(Context ctx) {
+        List<String> list = new ArrayList<String>();
+        SharedPreferences p = getPrefs(ctx);
+        fillStringList(list, p.getString("sms_cc_prefix", null));
+        return list;
     }
 
     static boolean isGmail(Context ctx) {

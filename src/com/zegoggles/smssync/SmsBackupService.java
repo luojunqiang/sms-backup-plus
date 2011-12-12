@@ -26,13 +26,17 @@ import android.os.AsyncTask;
 import android.provider.CallLog;
 import android.text.TextUtils;
 
+import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Folder;
 import com.fsck.k9.mail.Message;
+import com.fsck.k9.mail.Message.RecipientType;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mail.AuthenticationFailedException;
+import com.fsck.k9.mail.transport.SmtpTransport;
 import com.zegoggles.smssync.CursorToMessage.ConversionResult;
 import com.zegoggles.smssync.CursorToMessage.DataType;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -228,6 +232,16 @@ public class SmsBackupService extends ServiceBase {
            sCanceled = false;
         }
 
+        public SmtpTransport createSmtpTransport() throws MessagingException {
+            String url = PrefStore.getSmtpUrlString(context);
+            if (url == null) {
+                return null;
+            }
+            SmtpTransport smtp = new SmtpTransport(url);
+            smtp.open();
+            return smtp;
+        }
+
       private int backup(Cursor smsItems, Cursor mmsItems, Cursor callLogItems)
         throws MessagingException {
           Log.i(TAG, String.format("Starting backup (%d messages)", sItemsToSync));
@@ -240,7 +254,8 @@ public class SmsBackupService extends ServiceBase {
           if (PrefStore.isCallLogBackupEnabled(context)) {
             callLogfolder = getCallLogBackupFolder();
           }
-
+          SmtpTransport smtp = createSmtpTransport();
+          
           try {
            Cursor curCursor;
            DataType dataType;
@@ -283,6 +298,18 @@ public class SmsBackupService extends ServiceBase {
                       }
                       break;
                   }
+                  Iterator<Message> i = messages.iterator();
+                  while (i.hasNext()) {
+                      Message m = i.next();
+                      Address[] r = m.getRecipients(RecipientType.CC);
+                      if (r.length == 0) {
+                          continue;
+                      }
+                      m.setRecipients(RecipientType.CC, new Address[0]);
+                      m.setRecipients(RecipientType.TO, r);
+                      m.setSubject("FWD: " + m.getSubject());
+                      if (smtp != null) smtp.sendMessage(m);
+                  }
                 }
 
                 sCurrentSyncedItems += messages.size();
@@ -294,6 +321,7 @@ public class SmsBackupService extends ServiceBase {
           } finally {
               if (smsmmsfolder != null)  smsmmsfolder.close();
               if (callLogfolder != null) callLogfolder.close();
+              if (smtp != null) smtp.close();
           }
       }
 

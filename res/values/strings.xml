@@ -326,4 +326,29 @@
 
   <string name="loading">Loading…</string>
   <string name="ssl_error">SSL error</string>
+  
+  <string name="ui_sms_cc_settings_label">SMS CC email setting</string>
+  <string name="ui_sms_cc_email_label">CC email address</string>
+  <string name="ui_sms_cc_email_desc">SMS CC to email address</string>
+  <string name="ui_sms_cc_email_label_dialog_msg">SMS CC to email address</string>
+  <string name="ui_sms_cc_prefix_label">SMS CC prefix</string>
+  <string name="ui_sms_cc_prefix_desc">SMS CC sender address prefix</string>
+  <string name="ui_sms_cc_prefix_label_dialog_msg">SMS CC sender address prefix</string>
+  <string name="ui_send_mail_smtp_server_label">smtp server</string>
+  <string name="ui_send_mail_smtp_server_desc">smtp server to send email</string>
+  <string name="ui_send_mail_smtp_server_label_dialog_msg">smtp server to send email</string>
+  <string name="ui_send_mail_smtp_scheme_label">smtp scheme</string>
+  <string name="ui_send_mail_smtp_scheme_desc">smtp server scheme</string>
+  <string name="ui_send_mail_smtp_scheme_label_dialog_msg">smtp, smtp+tls, smtp+tls+, smtp+ssl+, smtp+ssl</string>
+  <string name="ui_send_mail_smtp_port_label">smtp port</string>
+  <string name="ui_send_mail_smtp_port_desc">smtp server port</string>
+  <string name="ui_send_mail_smtp_port_label_dialog_msg">smtp server port</string>
+  <string name="ui_send_mail_smtp_user_label">smtp login user</string>
+  <string name="ui_send_mail_smtp_user_desc">smtp login user</string>
+  <string name="ui_send_mail_smtp_user_label_dialog_msg">smtp login user name</string>
+  <string name="ui_send_mail_smtp_pwd_label">smtp login password</string>
+  <string name="ui_send_mail_smtp_pwd_desc">smtp login password</string>
+  <string name="ui_send_mail_smtp_pwd_label_dialog_msg">smtp login password</string>
+  <string name="empty_gmail_address">xxx@gmail.com</string>
+  
 </resources>

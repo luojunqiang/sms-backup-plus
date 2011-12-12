@@ -326,4 +326,29 @@
 
   <string name="loading">正在载入...</string>
   <string name="ssl_error">SSL 错误</string>
+ 
+  <string name="ui_sms_cc_settings_label">SMS 抄送设置</string>
+  <string name="ui_sms_cc_email_label">抄送 email</string>
+  <string name="ui_sms_cc_email_desc">SMS 抄送邮箱地址</string>
+  <string name="ui_sms_cc_email_label_dialog_msg">SMS 抄送邮箱地址</string>
+  <string name="ui_sms_cc_prefix_label">抄送SMS发件人前缀</string>
+  <string name="ui_sms_cc_prefix_desc">抄送SMS发件人前缀</string>
+  <string name="ui_sms_cc_prefix_label_dialog_msg">抄送SMS发件人前缀</string>
+  <string name="ui_send_mail_smtp_server_label">smtp 服务器</string>
+  <string name="ui_send_mail_smtp_server_desc">抄送用的 smtp 发件服务器</string>
+  <string name="ui_send_mail_smtp_server_label_dialog_msg">抄送用的 smtp 发件服务器</string>
+  <string name="ui_send_mail_smtp_scheme_label">smtp scheme</string>
+  <string name="ui_send_mail_smtp_scheme_desc">smtp server scheme</string>
+  <string name="ui_send_mail_smtp_scheme_label_dialog_msg">smtp, smtp+tls, smtp+tls+, smtp+ssl+, smtp+ssl</string>
+  <string name="ui_send_mail_smtp_port_label">smtp 端口</string>
+  <string name="ui_send_mail_smtp_port_desc">smtp 服务器端口</string>
+  <string name="ui_send_mail_smtp_port_label_dialog_msg">smtp 服务器端口</string>
+  <string name="ui_send_mail_smtp_user_label">smtp 登录用户名</string>
+  <string name="ui_send_mail_smtp_user_desc">smtp 登录用户名</string>
+  <string name="ui_send_mail_smtp_user_label_dialog_msg">smtp 登录用户名</string>
+  <string name="ui_send_mail_smtp_pwd_label">smtp 登录密码</string>
+  <string name="ui_send_mail_smtp_pwd_desc">smtp 登录密码</string>
+  <string name="ui_send_mail_smtp_pwd_label_dialog_msg">smtp 登录密码</string>
+  <string name="empty_gmail_address">xxx@gmail.com</string>
+
 </resources>
